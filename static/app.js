@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = `${window.location.origin}/api`;
 const INITIAL_NEWS_COUNT = 3;
 
 const newsListEl = document.getElementById("news-list");
@@ -32,9 +32,7 @@ async function requestJson(url, options = {}) {
             if (data?.detail) {
                 detail = data.detail;
             }
-        } catch (_) {
-            // Ignore JSON parse errors and keep status-based error.
-        }
+        } catch (_) {}
         throw new Error(detail);
     }
 
@@ -48,18 +46,15 @@ function setNewsMessage(message, isError = false) {
 
 function renderNewsSkeleton() {
     newsListEl.innerHTML = Array.from({ length: 3 })
-        .map(
-            () => `
-                <div class="skeleton-news-item">
-                    <div class="skeleton-line skeleton-image"></div>
-                    <div class="skeleton-copy">
-                        <div class="skeleton-line"></div>
-                        <div class="skeleton-line"></div>
-                    </div>
+        .map(() => `
+            <div class="skeleton-news-item">
+                <div class="skeleton-line skeleton-image"></div>
+                <div class="skeleton-copy">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
                 </div>
-            `
-        )
-        .join("");
+            </div>
+        `).join("");
 }
 
 async function loadNews() {
@@ -91,25 +86,23 @@ function renderNews() {
         ? allArticles
         : allArticles.slice(0, INITIAL_NEWS_COUNT);
 
-    newsListEl.innerHTML = visibleArticles
-            .map((article, index) => {
-                const imageMarkup = article.image
-                    ? `<img src="${article.image}" alt="News image" loading="lazy" referrerpolicy="no-referrer">`
-                    : `<div class="news-item-fallback">No Image</div>`;
+    newsListEl.innerHTML = visibleArticles.map((article, index) => {
+        const imageMarkup = article.image
+            ? `<img src="${article.image}" alt="News image" loading="lazy" referrerpolicy="no-referrer">`
+            : `<div class="news-item-fallback">No Image</div>`;
 
-                const shouldAnimateEnter = isNewsExpanded && index >= INITIAL_NEWS_COUNT;
+        const shouldAnimateEnter = isNewsExpanded && index >= INITIAL_NEWS_COUNT;
 
-                return `
-                    <a class="news-item ${shouldAnimateEnter ? "news-item-enter" : ""}" href="${article.url}" target="_blank" rel="noopener noreferrer">
-                        ${imageMarkup}
-                        <div class="news-content">
-                            <h3>${escapeHtml(article.title || "Untitled")}</h3>
-                            <p>${escapeHtml(article.source || "Unknown source")}</p>
-                        </div>
-                    </a>
-                `;
-            })
-            .join("");
+        return `
+            <a class="news-item ${shouldAnimateEnter ? "news-item-enter" : ""}" href="${article.url}" target="_blank" rel="noopener noreferrer">
+                ${imageMarkup}
+                <div class="news-content">
+                    <h3>${escapeHtml(article.title || "Untitled")}</h3>
+                    <p>${escapeHtml(article.source || "Unknown source")}</p>
+                </div>
+            </a>
+        `;
+    }).join("");
 
     const needsToggle = allArticles.length > INITIAL_NEWS_COUNT;
     newsToggleRowEl.hidden = !needsToggle;
@@ -136,9 +129,7 @@ function collapseNewsList() {
 }
 
 newsToggleBtnEl.addEventListener("click", () => {
-    if (!allArticles.length) {
-        return;
-    }
+    if (!allArticles.length) return;
 
     if (isNewsExpanded) {
         collapseNewsList();
@@ -165,23 +156,21 @@ function renderTodos(tasks) {
         return;
     }
 
-    todoListEl.innerHTML = tasks
-        .map((task) => {
-            const completed = Boolean(task.completed);
+    todoListEl.innerHTML = tasks.map((task) => {
+        const completed = Boolean(task.completed);
 
-            return `
-                <li class="todo-item ${completed ? "is-completed" : ""}">
-                    <p class="todo-title ${completed ? "completed" : ""}">${escapeHtml(task.title || "Untitled task")}</p>
-                    <div class="todo-actions">
-                        <button class="ghost-btn" ${completed ? "disabled" : ""} onclick="markTodoComplete(${task.id})">
-                            ${completed ? "Done" : "Complete"}
-                        </button>
-                        <button class="ghost-btn delete-btn" onclick="deleteTodo(${task.id})">Delete</button>
-                    </div>
-                </li>
-            `;
-        })
-        .join("");
+        return `
+            <li class="todo-item ${completed ? "is-completed" : ""}">
+                <p class="todo-title ${completed ? "completed" : ""}">${escapeHtml(task.title || "Untitled task")}</p>
+                <div class="todo-actions">
+                    <button class="ghost-btn" ${completed ? "disabled" : ""} onclick="markTodoComplete(${task.id})">
+                        ${completed ? "Done" : "Complete"}
+                    </button>
+                    <button class="ghost-btn delete-btn" onclick="deleteTodo(${task.id})">Delete</button>
+                </div>
+            </li>
+        `;
+    }).join("");
 }
 
 async function loadTodos() {
@@ -191,9 +180,8 @@ async function loadTodos() {
     try {
         const tasks = await requestJson(`${API_BASE}/todo/`);
         renderTodos(Array.isArray(tasks) ? tasks : []);
-
-        const completedCount = (tasks || []).filter((task) => task.completed).length;
-        todoStatusEl.textContent = `${completedCount}/${(tasks || []).length} completed`;
+        const completedCount = tasks.filter(t => t.completed).length;
+        todoStatusEl.textContent = `${completedCount}/${tasks.length} completed`;
     } catch (error) {
         setTodoMessage(`Could not load tasks: ${escapeHtml(error.message)}`, true);
         todoStatusEl.textContent = "Error";
@@ -208,98 +196,43 @@ async function addTodo(title) {
     });
 }
 
-window.markTodoComplete = async function markTodoComplete(taskId) {
-    try {
-        todoStatusEl.textContent = "Updating...";
-        await requestJson(`${API_BASE}/todo/${taskId}`, { method: "PUT" });
-        await loadTodos();
-    } catch (error) {
-        todoStatusEl.textContent = "Error";
-        alert(`Could not complete task: ${error.message}`);
-    }
+window.markTodoComplete = async function(taskId) {
+    await requestJson(`${API_BASE}/todo/${taskId}`, { method: "PUT" });
+    await loadTodos();
 };
 
-window.deleteTodo = async function deleteTodo(taskId) {
-    try {
-        todoStatusEl.textContent = "Updating...";
-        const response = await fetch(`${API_BASE}/todo/${taskId}`, { method: "DELETE" });
-        if (!response.ok) {
-            throw new Error(`Delete failed (${response.status})`);
-        }
-        await loadTodos();
-    } catch (error) {
-        todoStatusEl.textContent = "Error";
-        alert(`Could not delete task: ${error.message}`);
-    }
+window.deleteTodo = async function(taskId) {
+    await fetch(`${API_BASE}/todo/${taskId}`, { method: "DELETE" });
+    await loadTodos();
 };
 
-todoFormEl.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
+todoFormEl.addEventListener("submit", async (e) => {
+    e.preventDefault();
     const title = todoInputEl.value.trim();
-    if (!title) {
-        return;
-    }
+    if (!title) return;
 
-    const submitButton = todoFormEl.querySelector("button");
-    submitButton.disabled = true;
-    todoStatusEl.textContent = "Saving...";
-
-    try {
-        await addTodo(title);
-        todoInputEl.value = "";
-        await loadTodos();
-    } catch (error) {
-        todoStatusEl.textContent = "Error";
-        alert(`Could not add task: ${error.message}`);
-    } finally {
-        submitButton.disabled = false;
-    }
+    await addTodo(title);
+    todoInputEl.value = "";
+    await loadTodos();
 });
 
-qrFormEl.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
+qrFormEl.addEventListener("submit", async (e) => {
+    e.preventDefault();
     const value = qrInputEl.value.trim();
-    if (!value) {
-        return;
-    }
+    if (!value) return;
 
-    qrStatusEl.textContent = "Generating...";
+    const qrUrl = new URL(`${API_BASE}/qr/`);
+    qrUrl.searchParams.set("data", value);
 
-    try {
-        // Build URL safely using query params for user input.
-        const qrUrl = new URL(`${API_BASE}/qr/`);
-        qrUrl.searchParams.set("data", value);
-
-        // Validate endpoint availability before rendering image.
-        const probe = await fetch(qrUrl.toString(), { method: "GET" });
-        if (!probe.ok) {
-            throw new Error(`QR request failed (${probe.status})`);
-        }
-
-        qrOutputEl.innerHTML = `<img class="qr-image" src="${qrUrl.toString()}" alt="Generated QR Code">`;
-        qrOutputEl.classList.add("qr-output-active");
-        qrStatusEl.textContent = "Ready";
-    } catch (error) {
-        qrOutputEl.innerHTML = `<p class="error-message">Could not generate QR: ${escapeHtml(error.message)}</p>`;
-        qrOutputEl.classList.remove("qr-output-active");
-        qrStatusEl.textContent = "Error";
-    }
+    qrOutputEl.innerHTML = `<img class="qr-image" src="${qrUrl.toString()}">`;
 });
 
-/**
- * Lightweight HTML escaping to protect rendered content.
- */
 function escapeHtml(value) {
     return String(value)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
+        .replaceAll(">", "&gt;");
 }
 
-// Initial data bootstrap.
 loadNews();
 loadTodos();
