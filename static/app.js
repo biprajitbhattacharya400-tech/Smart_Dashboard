@@ -19,6 +19,7 @@ const qrStatusEl = document.getElementById("qr-status");
 const qrFormEl = document.getElementById("qr-form");
 const qrInputEl = document.getElementById("qr-input");
 const qrOutputEl = document.getElementById("qr-output");
+const cursorLightEl = document.getElementById("cursor-light");
 
 /**
  * Shared fetch helper with consistent error handling.
@@ -206,6 +207,22 @@ window.markTodoComplete = async function(taskId) {
 };
 
 window.deleteTodo = async function(taskId) {
+    const targetItem = document.querySelector(`button[onclick=\"deleteTodo(${taskId})\"]`)?.closest(".todo-item");
+
+    if (targetItem) {
+        targetItem.style.transition = "opacity 220ms ease, transform 220ms ease, max-height 220ms ease, margin 220ms ease, padding 220ms ease";
+        targetItem.style.maxHeight = `${targetItem.offsetHeight}px`;
+        requestAnimationFrame(() => {
+            targetItem.style.opacity = "0";
+            targetItem.style.transform = "translateY(6px) scale(0.98)";
+            targetItem.style.maxHeight = "0px";
+            targetItem.style.margin = "0";
+            targetItem.style.paddingTop = "0";
+            targetItem.style.paddingBottom = "0";
+        });
+        await new Promise((resolve) => setTimeout(resolve, 210));
+    }
+
     await fetch(`${API_BASE}/todo/${taskId}`, { method: "DELETE" });
     await loadTodos();
 };
@@ -240,5 +257,55 @@ function escapeHtml(value) {
         .replaceAll(">", "&gt;");
 }
 
+function setupCursorLight() {
+    if (!cursorLightEl) return;
+
+    window.addEventListener("mousemove", (event) => {
+        document.documentElement.style.setProperty("--cursor-x", `${event.clientX}px`);
+        document.documentElement.style.setProperty("--cursor-y", `${event.clientY}px`);
+    }, { passive: true });
+}
+
+function setupCardTilt() {
+    const cards = document.querySelectorAll(".card");
+
+    cards.forEach((card) => {
+        card.addEventListener("mousemove", (event) => {
+            const rect = card.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const rx = ((rect.height / 2 - y) / rect.height) * 2;
+            const ry = ((x - rect.width / 2) / rect.width) * 2;
+
+            card.style.setProperty("--rx", `${rx.toFixed(2)}deg`);
+            card.style.setProperty("--ry", `${ry.toFixed(2)}deg`);
+        }, { passive: true });
+
+        card.addEventListener("mouseleave", () => {
+            card.style.setProperty("--rx", "0deg");
+            card.style.setProperty("--ry", "0deg");
+        });
+    });
+}
+
+function setupButtonRipples() {
+    const controls = document.querySelectorAll("button, .button-link");
+
+    controls.forEach((control) => {
+        control.addEventListener("click", (event) => {
+            const rect = control.getBoundingClientRect();
+            const ripple = document.createElement("span");
+            ripple.className = "ripple";
+            ripple.style.left = `${event.clientX - rect.left}px`;
+            ripple.style.top = `${event.clientY - rect.top}px`;
+            control.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 520);
+        });
+    });
+}
+
 loadNews();
 loadTodos();
+setupCursorLight();
+setupCardTilt();
+setupButtonRipples();

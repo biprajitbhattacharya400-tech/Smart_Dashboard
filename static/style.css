@@ -14,6 +14,8 @@
     --shadow-card: 0 26px 44px rgba(0, 0, 0, 0.34);
     --shadow-glow: 0 0 0 1px rgba(79, 168, 255, 0.25), 0 16px 36px rgba(79, 168, 255, 0.16);
     --radius: 16px;
+    --cursor-x: 50vw;
+    --cursor-y: 50vh;
 }
 
 * {
@@ -45,7 +47,7 @@ html {
 body {
     margin: 0;
     min-height: 100vh;
-    font-family: "Space Grotesk", "Segoe UI", sans-serif;
+    font-family: "Geist", "Segoe UI", sans-serif;
     color: var(--text);
     background:
         radial-gradient(circle at 8% 12%, rgba(79, 168, 255, 0.2), transparent 36%),
@@ -106,12 +108,41 @@ body::after {
 
 .dashboard {
     position: relative;
-    z-index: 1;
+    z-index: 3;
     width: min(1180px, 94vw);
     margin: 34px auto;
     display: grid;
     gap: 18px;
     grid-template-columns: repeat(12, 1fr);
+}
+
+.grain-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.055;
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.18) 0.5px, transparent 0.5px),
+        radial-gradient(rgba(255, 255, 255, 0.12) 0.5px, transparent 0.5px);
+    background-size: 3px 3px, 4px 4px;
+    background-position: 0 0, 1px 1px;
+}
+
+.cursor-light {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 360px;
+    height: 360px;
+    pointer-events: none;
+    z-index: 2;
+    transform: translate3d(calc(var(--cursor-x) - 180px), calc(var(--cursor-y) - 180px), 0);
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(126, 176, 255, 0.12), rgba(126, 176, 255, 0.06) 30%, transparent 70%);
+    filter: blur(8px);
+    opacity: 0.85;
+    transition: transform 180ms linear;
 }
 
 .dashboard-header {
@@ -128,6 +159,16 @@ body::after {
     z-index: 4;
 }
 
+.dashboard-header::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(130, 195, 255, 0.55), rgba(147, 124, 255, 0.52), transparent);
+}
+
 .header-top {
     display: flex;
     align-items: center;
@@ -138,7 +179,7 @@ body::after {
 .dashboard-header h1 {
     margin: 0;
     font-size: clamp(1.7rem, 3vw, 2.35rem);
-    letter-spacing: 0.2px;
+    letter-spacing: 0.6px;
     line-height: 1.12;
     background: linear-gradient(110deg, #f4f8ff 0%, #b4d9ff 38%, #b39cff 72%, #eef4ff 100%);
     background-size: 200% auto;
@@ -182,6 +223,8 @@ body::after {
 }
 
 .card {
+    --rx: 0deg;
+    --ry: 0deg;
     background: linear-gradient(155deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018));
     background-color: var(--card);
     border: 1px solid var(--border);
@@ -189,13 +232,15 @@ body::after {
     padding: 18px;
     box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(14px);
-    transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease, background-color 250ms ease;
+    transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 250ms cubic-bezier(0.22, 1, 0.36, 1), border-color 250ms cubic-bezier(0.22, 1, 0.36, 1), background-color 250ms cubic-bezier(0.22, 1, 0.36, 1);
     opacity: 0;
     animation: cardLiftIn 520ms ease both;
+    transform-style: preserve-3d;
+    will-change: transform;
 }
 
 .card:hover {
-    transform: translateY(-6px) scale(1.01);
+    transform: perspective(1200px) translateY(-6px) scale(1.01) rotateX(var(--rx)) rotateY(var(--ry));
     box-shadow: 0 32px 54px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(124, 197, 255, 0.24);
     border-color: rgba(126, 200, 255, 0.4);
     background-color: var(--card-hover);
@@ -289,6 +334,17 @@ h2 {
     padding: 10px;
     overflow: hidden;
     transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
+    position: relative;
+}
+
+.news-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 14% 18%, rgba(140, 195, 255, 0.14), transparent 46%);
+    opacity: 0;
+    transition: opacity 220ms ease;
 }
 
 .news-item:hover {
@@ -296,6 +352,10 @@ h2 {
     border-color: rgba(79, 168, 255, 0.44);
     background: rgba(79, 168, 255, 0.08);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.27), 0 0 0 1px rgba(79, 168, 255, 0.2);
+}
+
+.news-item:hover::after {
+    opacity: 1;
 }
 
 .news-item + .news-item {
@@ -347,6 +407,28 @@ h2 {
     margin: 0;
     font-size: 0.95rem;
     line-height: 1.3;
+    position: relative;
+    width: fit-content;
+    transition: color 220ms ease;
+}
+
+.news-content h3::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(139, 197, 255, 0.95), rgba(145, 126, 255, 0.9));
+    transition: width 220ms ease;
+}
+
+.news-item:hover .news-content h3 {
+    color: #f4f9ff;
+}
+
+.news-item:hover .news-content h3::after {
+    width: 100%;
 }
 
 .news-content p {
@@ -388,7 +470,7 @@ input:focus::placeholder {
 input:focus {
     border-color: var(--accent);
     background: rgba(79, 168, 255, 0.06);
-    box-shadow: 0 0 0 3px rgba(79, 168, 255, 0.2);
+    box-shadow: 0 0 0 3px rgba(79, 168, 255, 0.2), inset 0 0 20px rgba(89, 154, 255, 0.1);
 }
 
 button,
@@ -402,6 +484,35 @@ button,
     height: 40px;
     cursor: pointer;
     transition: transform 220ms ease, filter 220ms ease, box-shadow 220ms ease;
+    position: relative;
+    overflow: hidden;
+    background-size: 160% 160%;
+    animation: buttonGradientMove 5s ease infinite;
+}
+
+button::before,
+.button-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(120deg, transparent 25%, rgba(255, 255, 255, 0.28) 48%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 450ms ease;
+}
+
+button:hover::before,
+.button-link:hover::before {
+    transform: translateX(120%);
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 999px;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.42);
+    animation: rippleExpand 520ms ease-out forwards;
+    pointer-events: none;
 }
 
 .button-link {
@@ -551,6 +662,9 @@ button:disabled {
     border: 1px dashed rgba(255, 255, 255, 0.18);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.02);
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
+        linear-gradient(135deg, rgba(128, 187, 255, 0.09) 0%, transparent 42%, rgba(146, 128, 255, 0.08) 100%);
     padding: 14px;
     transition: box-shadow 260ms ease, border-color 260ms ease;
 }
@@ -558,6 +672,7 @@ button:disabled {
 .qr-output.qr-output-active {
     border-color: rgba(126, 200, 255, 0.36);
     box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.2), 0 0 30px rgba(126, 200, 255, 0.16);
+    animation: qrAuraPulse 1.7s ease-in-out 1;
 }
 
 .qr-output img {
@@ -664,6 +779,18 @@ button:disabled {
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+@keyframes qrAuraPulse {
+    0% {
+        box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.08), 0 0 10px rgba(126, 200, 255, 0.08);
+    }
+    60% {
+        box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.24), 0 0 36px rgba(126, 200, 255, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.2), 0 0 30px rgba(126, 200, 255, 0.16);
     }
 }
 
@@ -785,6 +912,31 @@ button:disabled {
     }
 }
 
+@keyframes buttonGradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes rippleExpand {
+    from {
+        width: 0;
+        height: 0;
+        opacity: 0.55;
+    }
+    to {
+        width: 220px;
+        height: 220px;
+        opacity: 0;
+    }
+}
+
 @media (max-width: 990px) {
     .news-card,
     .todo-card,
@@ -849,5 +1001,9 @@ button:disabled {
 
     .card:hover {
         transform: translateY(-1px) scale(1.01);
+    }
+
+    .cursor-light {
+        display: none;
     }
 }
