@@ -48,8 +48,8 @@ body {
     font-family: "Space Grotesk", "Segoe UI", sans-serif;
     color: var(--text);
     background:
-        radial-gradient(circle at 0% 10%, rgba(79, 168, 255, 0.16), transparent 34%),
-        radial-gradient(circle at 100% 85%, rgba(169, 201, 233, 0.08), transparent 28%),
+        radial-gradient(circle at 8% 12%, rgba(79, 168, 255, 0.2), transparent 36%),
+        radial-gradient(circle at 92% 84%, rgba(131, 115, 255, 0.16), transparent 34%),
         linear-gradient(180deg, #090c11 0%, #080b10 52%, #070a0e 100%);
     position: relative;
     overflow-x: hidden;
@@ -62,6 +62,19 @@ body::before {
     pointer-events: none;
     background: linear-gradient(120deg, rgba(255, 255, 255, 0.02), transparent 32%, rgba(255, 255, 255, 0.015));
     animation: sheenDrift 14s ease-in-out infinite alternate;
+    z-index: 0;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: -20%;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 22% 24%, rgba(84, 157, 255, 0.12), transparent 38%),
+        radial-gradient(circle at 74% 72%, rgba(137, 112, 255, 0.11), transparent 42%);
+    filter: blur(24px);
+    animation: auroraShift 20s ease-in-out infinite alternate;
     z-index: 0;
 }
 
@@ -110,6 +123,9 @@ body::before {
     padding: 24px;
     backdrop-filter: blur(12px);
     animation: fadeInUp 480ms ease both;
+    position: sticky;
+    top: 12px;
+    z-index: 4;
 }
 
 .header-top {
@@ -124,6 +140,12 @@ body::before {
     font-size: clamp(1.7rem, 3vw, 2.35rem);
     letter-spacing: 0.2px;
     line-height: 1.12;
+    background: linear-gradient(110deg, #f4f8ff 0%, #b4d9ff 38%, #b39cff 72%, #eef4ff 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: titleGradientShift 8s ease-in-out infinite;
 }
 
 .brand-signature {
@@ -165,7 +187,7 @@ body::before {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 18px;
-    box-shadow: var(--shadow-soft);
+    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(14px);
     transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease, background-color 250ms ease;
     opacity: 0;
@@ -173,8 +195,8 @@ body::before {
 }
 
 .card:hover {
-    transform: translateY(-4px) scale(1.015);
-    box-shadow: 0 30px 48px rgba(0, 0, 0, 0.38);
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 32px 54px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(124, 197, 255, 0.24);
     border-color: rgba(126, 200, 255, 0.4);
     background-color: var(--card-hover);
 }
@@ -273,7 +295,7 @@ h2 {
     transform: translateY(-2px) scale(1.01);
     border-color: rgba(79, 168, 255, 0.44);
     background: rgba(79, 168, 255, 0.08);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.27), 0 0 0 1px rgba(79, 168, 255, 0.2);
 }
 
 .news-item + .news-item {
@@ -307,7 +329,7 @@ h2 {
 }
 
 .news-item:hover img {
-    transform: scale(1.08);
+    transform: scale(1.1);
 }
 
 .news-item-fallback {
@@ -373,7 +395,7 @@ button,
 .button-link {
     border: 0;
     border-radius: 10px;
-    background: linear-gradient(145deg, #82ccff, #6f84ff);
+    background: linear-gradient(145deg, #86d0ff, #7782ff);
     color: #03101e;
     font-weight: 700;
     min-width: 96px;
@@ -400,7 +422,7 @@ button:hover,
 
 button:active,
 .button-link:active {
-    transform: translateY(0) scale(0.97);
+    transform: translateY(0) scale(0.96);
 }
 
 .weather-description {
@@ -461,6 +483,10 @@ button:disabled {
     border-color: rgba(79, 168, 255, 0.3);
     transform: translateY(-1px);
     background-color: rgba(79, 168, 255, 0.06);
+}
+
+.todo-item-enter {
+    animation: todoEnter 320ms ease both;
 }
 
 .todo-title {
@@ -531,7 +557,7 @@ button:disabled {
 
 .qr-output.qr-output-active {
     border-color: rgba(126, 200, 255, 0.36);
-    box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.2), 0 0 24px rgba(126, 200, 255, 0.12);
+    box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.2), 0 0 30px rgba(126, 200, 255, 0.16);
 }
 
 .qr-output img {
@@ -641,6 +667,17 @@ button:disabled {
     }
 }
 
+@keyframes todoEnter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes brandFadeIn {
     to {
         opacity: 1;
@@ -722,6 +759,29 @@ button:disabled {
     100% {
         opacity: 1;
         transform: translateX(1%);
+    }
+}
+
+@keyframes auroraShift {
+    0% {
+        transform: translate3d(-2%, 0, 0) scale(1);
+        opacity: 0.85;
+    }
+    100% {
+        transform: translate3d(2%, -1%, 0) scale(1.04);
+        opacity: 1;
+    }
+}
+
+@keyframes titleGradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
     }
 }
 

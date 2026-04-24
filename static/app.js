@@ -8,6 +8,7 @@ const newsToggleBtnEl = document.getElementById("news-toggle-btn");
 
 let allArticles = [];
 let isNewsExpanded = false;
+let lastAddedTaskId = null;
 
 const todoStatusEl = document.getElementById("todo-status");
 const todoListEl = document.getElementById("todo-list");
@@ -158,9 +159,10 @@ function renderTodos(tasks) {
 
     todoListEl.innerHTML = tasks.map((task) => {
         const completed = Boolean(task.completed);
+        const isNewTask = task.id === lastAddedTaskId;
 
         return `
-            <li class="todo-item ${completed ? "is-completed" : ""}">
+            <li class="todo-item ${completed ? "is-completed" : ""} ${isNewTask ? "todo-item-enter" : ""}">
                 <p class="todo-title ${completed ? "completed" : ""}">${escapeHtml(task.title || "Untitled task")}</p>
                 <div class="todo-actions">
                     <button class="ghost-btn" ${completed ? "disabled" : ""} onclick="markTodoComplete(${task.id})">
@@ -171,6 +173,8 @@ function renderTodos(tasks) {
             </li>
         `;
     }).join("");
+
+    lastAddedTaskId = null;
 }
 
 async function loadTodos() {
@@ -189,7 +193,7 @@ async function loadTodos() {
 }
 
 async function addTodo(title) {
-    await requestJson(`${API_BASE}/todo/add`, {
+    return requestJson(`${API_BASE}/todo/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title })
@@ -211,7 +215,8 @@ todoFormEl.addEventListener("submit", async (e) => {
     const title = todoInputEl.value.trim();
     if (!title) return;
 
-    await addTodo(title);
+    const createdTask = await addTodo(title);
+    lastAddedTaskId = createdTask?.id ?? null;
     todoInputEl.value = "";
     await loadTodos();
 });
@@ -225,6 +230,7 @@ qrFormEl.addEventListener("submit", async (e) => {
     qrUrl.searchParams.set("data", value);
 
     qrOutputEl.innerHTML = `<img class="qr-image" src="${qrUrl.toString()}">`;
+    qrOutputEl.classList.add("qr-output-active");
 });
 
 function escapeHtml(value) {
