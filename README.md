@@ -6,6 +6,9 @@ Built using **FastAPI + Vanilla JavaScript**, this project demonstrates real-wor
 
 ---
 
+## 🚀 Live Demo
+https://smart-dashboard-02bl.onrender.com
+
 ## ✨ Features
 
 * 📰 **Live News Feed**
