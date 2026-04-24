@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Daily Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <main class="dashboard">
+        <header class="dashboard-header">
+            <div class="header-top">
+                <h1>Smart Dashboard</h1>
+                <p class="brand-signature">Made with <span class="brand-heart">❤</span> by Biprajit</p>
+            </div>
+            <p>Your daily brief, tasks, and quick QR tools in one place.</p>
+        </header>
+
+        <section class="card news-card" aria-labelledby="news-title">
+            <div class="card-title-row">
+                <h2 id="news-title">📰 News</h2>
+                <span class="muted" id="news-status">Loading...</span>
+            </div>
+            <div id="news-list" class="news-list" aria-live="polite"></div>
+            <div id="news-toggle-row" class="news-toggle-row" hidden>
+                <button id="news-toggle-btn" class="news-toggle-btn" type="button">See More</button>
+            </div>
+        </section>
+
+        <section class="card todo-card" aria-labelledby="todo-title">
+            <div class="card-title-row">
+                <h2 id="todo-title">✅ Todo</h2>
+                <span class="muted" id="todo-status">Loading...</span>
+            </div>
+
+            <form id="todo-form" class="todo-form">
+                <input id="todo-input" type="text" placeholder="Add a task..." maxlength="120" required>
+                <button type="submit">Add</button>
+            </form>
+
+            <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
+        </section>
+
+        <section class="card qr-card" aria-labelledby="qr-title">
+            <div class="card-title-row">
+                <h2 id="qr-title">🔳 QR Generator</h2>
+                <span class="muted" id="qr-status">Ready</span>
+            </div>
+
+            <form id="qr-form" class="qr-form">
+                <input id="qr-input" type="text" placeholder="Enter text or URL" maxlength="500" required>
+                <button type="submit">Generate</button>
+            </form>
+
+            <div id="qr-output" class="qr-output">
+                <p class="muted">QR image will appear here.</p>
+            </div>
+        </section>
+
+        <section class="card weather-card" aria-labelledby="weather-title">
+            <div class="card-title-row">
+                <h2 id="weather-title">🌤️ Weather</h2>
+                <span class="muted">External App</span>
+            </div>
+            <p class="muted weather-description">Check today's weather and forecasts</p>
+            <a class="button-link" href="https://weather-ai-api.vercel.app/" target="_blank" rel="noopener noreferrer">
+                Open Weather App
+            </a>
+        </section>
+    </main>
+
+    <script src="/static/app.js" defer></script>
+</body>
+</html>
