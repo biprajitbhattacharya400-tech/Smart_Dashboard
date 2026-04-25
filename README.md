@@ -117,12 +117,6 @@ NEWS_API_KEY=your_api_key_here
 
 ---
 
-## 🚀 Live Demo
-
-(Will be added after deployment)
-
----
-
 ## 🧠 What I Learned
 
 * Building REST APIs using FastAPI
