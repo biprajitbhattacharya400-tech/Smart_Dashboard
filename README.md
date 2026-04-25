@@ -27,7 +27,7 @@ https://smart-dashboard-02bl.onrender.com
 
 * 🌦 **Weather Integration**
 
-  * Quick access to external weather app
+  * Quick access to my previous weather app
 
 * 🎨 **Premium UI**
 
