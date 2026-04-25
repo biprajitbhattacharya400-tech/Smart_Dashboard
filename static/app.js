@@ -306,6 +306,3 @@ function setupButtonRipples() {
 
 loadNews();
 loadTodos();
-setupCursorLight();
-setupCardTilt();
-setupButtonRipples();
