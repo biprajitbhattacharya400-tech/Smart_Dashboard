@@ -21,6 +21,18 @@ const qrInputEl = document.getElementById("qr-input");
 const qrOutputEl = document.getElementById("qr-output");
 const cursorLightEl = document.getElementById("cursor-light");
 
+const analyticsStatusEl = document.getElementById("analytics-status");
+const metricTotalEl = document.getElementById("metric-total");
+const metricCompletedEl = document.getElementById("metric-completed");
+const metricPendingEl = document.getElementById("metric-pending");
+const metricRateEl = document.getElementById("metric-rate");
+const analyticsInsightEl = document.getElementById("analytics-insight");
+const tasksLineChartEl = document.getElementById("tasks-line-chart");
+const tasksPieChartEl = document.getElementById("tasks-pie-chart");
+
+let tasksLineChart = null;
+let tasksPieChart = null;
+
 /**
  * Shared fetch helper with consistent error handling.
  */
@@ -192,9 +204,11 @@ async function loadTodos() {
         renderTodos(Array.isArray(tasks) ? tasks : []);
         const completedCount = tasks.filter(t => t.completed).length;
         todoStatusEl.textContent = `${completedCount}/${tasks.length} completed`;
+        await loadAnalytics();
     } catch (error) {
         setTodoMessage(`Could not load tasks: ${escapeHtml(error.message)}`, true);
         todoStatusEl.textContent = "Error";
+        analyticsStatusEl.textContent = "Error";
     }
 }
 
@@ -255,6 +269,109 @@ qrFormEl.addEventListener("submit", async (e) => {
     qrOutputEl.classList.add("qr-output-active");
 });
 
+function resetCharts() {
+    if (tasksLineChart) {
+        tasksLineChart.destroy();
+        tasksLineChart = null;
+    }
+
+    if (tasksPieChart) {
+        tasksPieChart.destroy();
+        tasksPieChart = null;
+    }
+}
+
+function renderAnalyticsCharts(data) {
+    if (!tasksLineChartEl || !tasksPieChartEl || typeof Chart === "undefined") {
+        return;
+    }
+
+    resetCharts();
+
+    const labels = data.tasks_by_day.map((entry) => entry.date);
+    const values = data.tasks_by_day.map((entry) => entry.count);
+
+    tasksLineChart = new Chart(tasksLineChartEl, {
+        type: "line",
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: "Tasks",
+                    data: values,
+                    borderColor: "#7fbff5",
+                    backgroundColor: "rgba(127, 191, 245, 0.18)",
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3,
+                    pointHoverRadius: 4,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    ticks: { color: "#91a0b5" },
+                    grid: { color: "rgba(176, 203, 237, 0.15)" },
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: "#91a0b5", precision: 0 },
+                    grid: { color: "rgba(176, 203, 237, 0.15)" },
+                },
+            },
+            plugins: {
+                legend: { labels: { color: "#cbd6e5" } },
+            },
+        },
+    });
+
+    tasksPieChart = new Chart(tasksPieChartEl, {
+        type: "pie",
+        data: {
+            labels: ["Completed", "Pending"],
+            datasets: [
+                {
+                    data: [data.completed_tasks, data.pending_tasks],
+                    backgroundColor: ["#6ecb9b", "#7f8ea6"],
+                    borderColor: ["#2a3c35", "#2b3340"],
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: "#cbd6e5" } },
+            },
+        },
+    });
+}
+
+async function loadAnalytics() {
+    analyticsStatusEl.textContent = "Loading...";
+
+    try {
+        const data = await requestJson(`${API_BASE}/analytics/`);
+
+        metricTotalEl.textContent = data.total_tasks;
+        metricCompletedEl.textContent = data.completed_tasks;
+        metricPendingEl.textContent = data.pending_tasks;
+        metricRateEl.textContent = `${data.completion_rate}%`;
+        analyticsInsightEl.textContent = `You completed ${data.completion_rate}% of your tasks.`;
+
+        renderAnalyticsCharts(data);
+        analyticsStatusEl.textContent = "Updated";
+    } catch (error) {
+        analyticsStatusEl.textContent = "Error";
+        analyticsInsightEl.textContent = `Could not load analytics: ${error.message}`;
+        resetCharts();
+    }
+}
+
 function escapeHtml(value) {
     return String(value)
         .replaceAll("&", "&amp;")
@@ -311,3 +428,4 @@ function setupButtonRipples() {
 
 loadNews();
 loadTodos();
+loadAnalytics();

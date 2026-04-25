@@ -305,6 +305,10 @@ body::after {
     grid-column: span 5;
 }
 
+.analytics-card {
+    grid-column: span 12;
+}
+
 .qr-card {
     grid-column: span 8;
 }
@@ -319,6 +323,60 @@ body::after {
 
 .weather-card h2 {
     font-size: 1.14rem;
+}
+
+.analytics-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.metric-box {
+    margin: 0;
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(176, 203, 237, 0.2);
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.metric-label {
+    margin: 0 0 6px;
+    font-size: 0.84rem;
+    color: #8a98ad;
+}
+
+.metric-value {
+    margin: 0;
+    font-size: 1.38rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.analytics-insight {
+    margin: 0 0 var(--space-3);
+    font-size: 0.92rem;
+    color: #9aa8bc;
+}
+
+.analytics-charts {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: var(--space-2);
+}
+
+.chart-box {
+    border: 1px solid rgba(176, 203, 237, 0.2);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.02);
+    padding: var(--space-2);
+    min-height: 220px;
+}
+
+.chart-label {
+    margin: 0 0 var(--space-2);
+    color: #90a0b6;
+    font-size: 0.88rem;
 }
 
 .card-title-row {
@@ -1000,9 +1058,18 @@ button:disabled {
 @media (max-width: 990px) {
     .news-card,
     .todo-card,
+    .analytics-card,
     .qr-card,
     .weather-card {
         grid-column: span 12;
+    }
+
+    .analytics-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .analytics-charts {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -1042,6 +1109,10 @@ button:disabled {
     .todo-form,
     .qr-form {
         flex-direction: column;
+    }
+
+    .analytics-metrics {
+        grid-template-columns: 1fr;
     }
 
     button,

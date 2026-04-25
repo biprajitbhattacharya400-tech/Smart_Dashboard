@@ -49,6 +49,45 @@
             <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
         </section>
 
+        <section class="card analytics-card" aria-labelledby="analytics-title">
+            <div class="card-title-row">
+                <h2 id="analytics-title">📊 Analytics</h2>
+                <span class="muted" id="analytics-status">Loading...</span>
+            </div>
+
+            <div class="analytics-metrics" id="analytics-metrics">
+                <article class="metric-box">
+                    <p class="metric-label">🧾 Total Tasks</p>
+                    <p class="metric-value" id="metric-total">0</p>
+                </article>
+                <article class="metric-box">
+                    <p class="metric-label">✅ Completed</p>
+                    <p class="metric-value" id="metric-completed">0</p>
+                </article>
+                <article class="metric-box">
+                    <p class="metric-label">🕒 Pending</p>
+                    <p class="metric-value" id="metric-pending">0</p>
+                </article>
+                <article class="metric-box">
+                    <p class="metric-label">📈 Completion %</p>
+                    <p class="metric-value" id="metric-rate">0%</p>
+                </article>
+            </div>
+
+            <p class="analytics-insight" id="analytics-insight">You completed 0% of your tasks.</p>
+
+            <div class="analytics-charts">
+                <div class="chart-box">
+                    <p class="chart-label">Tasks Over Time</p>
+                    <canvas id="tasks-line-chart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <p class="chart-label">Completed vs Pending</p>
+                    <canvas id="tasks-pie-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
         <section class="card qr-card" aria-labelledby="qr-title">
             <div class="card-title-row">
                 <h2 id="qr-title">🔳 QR Generator</h2>
@@ -77,6 +116,7 @@
         </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/static/app.js" defer></script>
 </body>
 </html>
