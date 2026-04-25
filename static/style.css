@@ -561,7 +561,6 @@ button:disabled {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding-left: 40px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--line-soft);
     border-radius: 10px;
@@ -570,24 +569,11 @@ button:disabled {
 }
 
 .todo-item::before {
-    content: "";
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    width: 16px;
-    height: 16px;
-    border-radius: 999px;
-    border: 1px solid rgba(166, 180, 197, 0.7);
-    background: rgba(255, 255, 255, 0.04);
-    transform: translateY(-50%);
-    transition: transform 220ms ease, background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    content: none;
 }
 
 .todo-item.is-completed::before {
-    border-color: rgba(126, 200, 255, 0.9);
-    background: radial-gradient(circle at 35% 35%, #99daff 0%, #66adff 70%);
-    box-shadow: 0 0 0 3px rgba(126, 200, 255, 0.16);
-    animation: checkPop 280ms ease;
+    content: none;
 }
 
 .todo-item:hover {
