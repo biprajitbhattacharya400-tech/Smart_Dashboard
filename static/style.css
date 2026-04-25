@@ -20,6 +20,8 @@
     --space-2: 12px;
     --space-3: 16px;
     --space-4: 24px;
+    --dur-fast: 200ms;
+    --dur-base: 260ms;
     --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
     --cursor-x: 50vw;
     --cursor-y: 50vh;
@@ -57,9 +59,10 @@ body {
     font-family: "Geist", "Segoe UI", sans-serif;
     color: var(--text);
     background:
-        radial-gradient(circle at 8% 12%, rgba(79, 168, 255, 0.12), transparent 38%),
-        radial-gradient(circle at 92% 84%, rgba(131, 115, 255, 0.1), transparent 36%),
-        linear-gradient(180deg, #070a0f 0%, #06090e 52%, #05080d 100%);
+        radial-gradient(circle at 50% 0%, rgba(132, 183, 255, 0.12), transparent 38%),
+        radial-gradient(circle at 8% 12%, rgba(79, 168, 255, 0.09), transparent 38%),
+        radial-gradient(circle at 92% 84%, rgba(131, 115, 255, 0.08), transparent 36%),
+        linear-gradient(180deg, #06090f 0%, #06090d 52%, #05080c 100%);
     position: relative;
     overflow-x: hidden;
 }
@@ -69,7 +72,10 @@ body::before {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(120deg, rgba(255, 255, 255, 0.012), transparent 34%, rgba(255, 255, 255, 0.008));
+    background:
+        linear-gradient(120deg, rgba(255, 255, 255, 0.012), transparent 34%, rgba(255, 255, 255, 0.008)),
+        repeating-linear-gradient(0deg, transparent 0 28px, rgba(255, 255, 255, 0.015) 28px 29px),
+        repeating-linear-gradient(90deg, transparent 0 28px, rgba(255, 255, 255, 0.012) 28px 29px);
     animation: sheenDrift 18s ease-in-out infinite alternate;
     z-index: 0;
 }
@@ -160,7 +166,7 @@ body::after {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-card);
-    padding: var(--space-4);
+    padding: 28px 24px;
     backdrop-filter: blur(10px);
     animation: fadeInUp 480ms ease both;
     position: sticky;
@@ -196,6 +202,7 @@ body::after {
     font-size: clamp(1.7rem, 3vw, 2.35rem);
     letter-spacing: 0.6px;
     line-height: 1.12;
+    font-weight: 800;
     background: linear-gradient(110deg, #f1f5fd 0%, #c5dff7 45%, #d6def6 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
@@ -233,7 +240,7 @@ body::after {
 
 .dashboard-header p {
     margin: var(--space-1) 0 0;
-    color: var(--muted);
+    color: #a6b1c2;
     font-size: 0.98rem;
 }
 
@@ -250,7 +257,7 @@ body::after {
     padding: 20px;
     box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(8px);
-    transition: transform 250ms var(--ease-premium), box-shadow 250ms var(--ease-premium), border-color 250ms var(--ease-premium), background-color 250ms var(--ease-premium);
+    transition: transform var(--dur-base) var(--ease-premium), box-shadow var(--dur-base) var(--ease-premium), border-color var(--dur-base) var(--ease-premium), background-color var(--dur-base) var(--ease-premium);
     opacity: 0;
     animation: cardLiftIn 520ms ease both;
     transform-style: preserve-3d;
@@ -306,8 +313,12 @@ body::after {
     grid-column: span 4;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: var(--space-3);
     justify-content: center;
+}
+
+.weather-card h2 {
+    font-size: 1.14rem;
 }
 
 .card-title-row {
@@ -322,6 +333,7 @@ h2 {
     margin: 0;
     font-size: 1.08rem;
     letter-spacing: 0.3px;
+    font-weight: 650;
     transition: color 220ms ease, transform 220ms ease;
 }
 
@@ -331,13 +343,13 @@ h2 {
 }
 
 .muted {
-    color: var(--muted);
+    color: #8a98ad;
     font-size: 0.9rem;
 }
 
 .news-list {
     display: grid;
-    gap: var(--space-2);
+    gap: var(--space-3);
 }
 
 .news-toggle-row {
@@ -359,7 +371,7 @@ h2 {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--line-soft);
     border-radius: var(--radius-md);
-    padding: var(--space-2);
+    padding: var(--space-3);
     overflow: hidden;
     transition: transform 220ms var(--ease-premium), border-color 220ms var(--ease-premium), background 220ms var(--ease-premium), box-shadow 220ms var(--ease-premium);
     position: relative;
@@ -397,9 +409,9 @@ h2 {
 .news-item + .news-item::before {
     content: "";
     position: absolute;
-    top: -7px;
-    left: 12px;
-    right: 12px;
+    top: -9px;
+    left: var(--space-3);
+    right: var(--space-3);
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
 }
@@ -414,7 +426,7 @@ h2 {
 
 .news-item img {
     width: 100%;
-    height: 76px;
+    height: 84px;
     aspect-ratio: 4 / 3;
     object-fit: cover;
     border-radius: var(--radius-sm);
@@ -422,8 +434,8 @@ h2 {
 }
 
 .news-item:hover img {
-    transform: scale(1.1);
-    filter: brightness(1.04);
+    transform: scale(1.06);
+    filter: brightness(1.03);
 }
 
 .news-item-fallback {
@@ -476,6 +488,7 @@ h2 {
     display: flex;
     gap: var(--space-2);
     margin-bottom: var(--space-3);
+    align-items: center;
 }
 
 input {
@@ -488,7 +501,7 @@ input {
     color: var(--text);
     padding: 0 12px;
     outline: none;
-    transition: border-color 220ms var(--ease-premium), box-shadow 220ms var(--ease-premium), background-color 220ms var(--ease-premium);
+    transition: border-color var(--dur-fast) var(--ease-premium), box-shadow var(--dur-fast) var(--ease-premium), background-color var(--dur-fast) var(--ease-premium);
 }
 
 input:hover {
@@ -523,7 +536,7 @@ button,
     height: 42px;
     padding: 0 var(--space-3);
     cursor: pointer;
-    transition: transform 220ms var(--ease-premium), filter 220ms var(--ease-premium), box-shadow 220ms var(--ease-premium);
+    transition: transform var(--dur-fast) var(--ease-premium), filter var(--dur-fast) var(--ease-premium), box-shadow var(--dur-fast) var(--ease-premium);
     position: relative;
     overflow: hidden;
     background-size: 160% 160%;
@@ -576,7 +589,7 @@ button:active,
 }
 
 .weather-description {
-    margin: 0;
+    margin: 2px 0 0;
 }
 
 button:disabled {
@@ -688,9 +701,9 @@ button:disabled {
     min-height: 180px;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(176, 203, 237, 0.34);
     border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.04);
     background-image:
         linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
         linear-gradient(135deg, rgba(128, 187, 255, 0.09) 0%, transparent 42%, rgba(146, 128, 255, 0.08) 100%);
@@ -705,7 +718,7 @@ button:disabled {
 
 .qr-output.qr-output-active {
     border-color: rgba(126, 200, 255, 0.3);
-    box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.14), 0 0 16px rgba(126, 200, 255, 0.12);
+    box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.16), 0 0 14px rgba(126, 200, 255, 0.1);
     animation: qrAuraPulse 1.7s ease-in-out 1;
 }
 
@@ -729,9 +742,22 @@ button:disabled {
 .empty-state {
     color: var(--muted);
     text-align: center;
-    padding: 14px;
-    border: 1px dashed rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
+    padding: var(--space-3);
+    border: 1px dashed rgba(176, 203, 237, 0.22);
+    border-radius: var(--radius-sm);
+}
+
+.todo-list .empty-state {
+    color: #90a0b6;
+    border-style: dashed;
+}
+
+.todo-list .empty-state::before {
+    content: "☑";
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    color: #a4b4cb;
 }
 
 .skeleton-line {

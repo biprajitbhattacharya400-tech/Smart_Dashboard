@@ -143,7 +143,12 @@ newsToggleBtnEl.addEventListener("click", () => {
 });
 
 function setTodoMessage(message, isError = false) {
-    todoListEl.innerHTML = `<li class="${isError ? "error-message" : "empty-state"}">${message}</li>`;
+    if (isError) {
+        todoListEl.innerHTML = `<li class="error-message">${message}</li>`;
+        return;
+    }
+
+    todoListEl.innerHTML = `<li class="empty-state"><span>${message}</span></li>`;
 }
 
 function renderTodoSkeleton() {
