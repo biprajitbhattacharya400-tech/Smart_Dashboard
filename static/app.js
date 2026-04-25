@@ -127,7 +127,7 @@ function collapseNewsList() {
         isNewsExpanded = false;
         renderNews();
         newsToggleBtnEl.disabled = false;
-    }, 190);
+    }, 230);
 }
 
 newsToggleBtnEl.addEventListener("click", () => {
@@ -274,8 +274,8 @@ function setupCardTilt() {
             const rect = card.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
-            const rx = ((rect.height / 2 - y) / rect.height) * 2;
-            const ry = ((x - rect.width / 2) / rect.width) * 2;
+            const rx = ((rect.height / 2 - y) / rect.height) * 1.2;
+            const ry = ((x - rect.width / 2) / rect.width) * 1.2;
 
             card.style.setProperty("--rx", `${rx.toFixed(2)}deg`);
             card.style.setProperty("--ry", `${ry.toFixed(2)}deg`);

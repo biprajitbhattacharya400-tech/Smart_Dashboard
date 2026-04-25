@@ -3,7 +3,7 @@
     --bg-elev: #0d1218;
     --card: rgba(16, 22, 30, 0.66);
     --card-hover: rgba(18, 26, 35, 0.78);
-    --text: #eef3fb;
+    --text: #e6eaf2;
     --muted: #9ba9bb;
     --accent: #4fa8ff;
     --accent-2: #7ec8ff;
@@ -14,6 +14,13 @@
     --shadow-card: 0 26px 44px rgba(0, 0, 0, 0.34);
     --shadow-glow: 0 0 0 1px rgba(79, 168, 255, 0.25), 0 16px 36px rgba(79, 168, 255, 0.16);
     --radius: 16px;
+    --radius-md: 12px;
+    --radius-sm: 10px;
+    --space-1: 8px;
+    --space-2: 12px;
+    --space-3: 16px;
+    --space-4: 24px;
+    --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
     --cursor-x: 50vw;
     --cursor-y: 50vh;
 }
@@ -110,9 +117,9 @@ body::after {
     position: relative;
     z-index: 3;
     width: min(1180px, 94vw);
-    margin: 34px auto;
+    margin: 32px auto;
     display: grid;
-    gap: 18px;
+    gap: var(--space-3);
     grid-template-columns: repeat(12, 1fr);
 }
 
@@ -151,8 +158,8 @@ body::after {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-card);
-    padding: 24px;
-    backdrop-filter: blur(12px);
+    padding: var(--space-4);
+    backdrop-filter: blur(16px);
     animation: fadeInUp 480ms ease both;
     position: sticky;
     top: 12px;
@@ -217,7 +224,7 @@ body::after {
 }
 
 .dashboard-header p {
-    margin: 8px 0 0;
+    margin: var(--space-1) 0 0;
     color: var(--muted);
     font-size: 0.98rem;
 }
@@ -225,24 +232,37 @@ body::after {
 .card {
     --rx: 0deg;
     --ry: 0deg;
-    background: linear-gradient(155deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018));
+    position: relative;
+    background:
+        linear-gradient(155deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018)) padding-box,
+        linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(133, 171, 255, 0.18), rgba(255, 255, 255, 0.08)) border-box;
     background-color: var(--card);
-    border: 1px solid var(--border);
+    border: 1px solid transparent;
     border-radius: var(--radius);
-    padding: 18px;
-    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    padding: 20px;
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.28), 0 8px 16px rgba(8, 13, 24, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.09);
     backdrop-filter: blur(14px);
-    transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 250ms cubic-bezier(0.22, 1, 0.36, 1), border-color 250ms cubic-bezier(0.22, 1, 0.36, 1), background-color 250ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 250ms var(--ease-premium), box-shadow 250ms var(--ease-premium), border-color 250ms var(--ease-premium), background-color 250ms var(--ease-premium);
     opacity: 0;
     animation: cardLiftIn 520ms ease both;
     transform-style: preserve-3d;
     will-change: transform;
 }
 
+.card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(circle at 14% 10%, rgba(255, 255, 255, 0.12), transparent 52%);
+    opacity: 0.9;
+}
+
 .card:hover {
     transform: perspective(1200px) translateY(-6px) scale(1.01) rotateX(var(--rx)) rotateY(var(--ry));
-    box-shadow: 0 32px 54px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(124, 197, 255, 0.24);
-    border-color: rgba(126, 200, 255, 0.4);
+    box-shadow: 0 30px 52px rgba(0, 0, 0, 0.35), 0 10px 20px rgba(8, 13, 24, 0.3), 0 0 0 1px rgba(124, 197, 255, 0.2);
+    border-color: rgba(126, 200, 255, 0.32);
     background-color: var(--card-hover);
 }
 
@@ -286,8 +306,8 @@ body::after {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 14px;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
 }
 
 h2 {
@@ -309,11 +329,11 @@ h2 {
 
 .news-list {
     display: grid;
-    gap: 12px;
+    gap: var(--space-2);
 }
 
 .news-toggle-row {
-    margin-top: 16px;
+    margin-top: var(--space-3);
     display: flex;
     justify-content: center;
 }
@@ -330,10 +350,10 @@ h2 {
     color: inherit;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--line-soft);
-    border-radius: 14px;
-    padding: 10px;
+    border-radius: var(--radius-md);
+    padding: var(--space-2);
     overflow: hidden;
-    transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
+    transition: transform 220ms var(--ease-premium), border-color 220ms var(--ease-premium), background 220ms var(--ease-premium), box-shadow 220ms var(--ease-premium);
     position: relative;
 }
 
@@ -373,23 +393,25 @@ h2 {
 }
 
 .news-item-enter {
-    animation: newsEnter 260ms ease both;
+    animation: newsEnter 280ms var(--ease-premium) both;
 }
 
 .news-item-leave {
-    animation: newsLeave 200ms ease both;
+    animation: newsLeave 220ms var(--ease-premium) both;
 }
 
 .news-item img {
     width: 100%;
-    height: 72px;
+    height: 76px;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
-    border-radius: 10px;
-    transition: transform 260ms ease;
+    border-radius: var(--radius-sm);
+    transition: transform 260ms var(--ease-premium), filter 260ms var(--ease-premium);
 }
 
 .news-item:hover img {
     transform: scale(1.1);
+    filter: brightness(1.04);
 }
 
 .news-item-fallback {
@@ -440,8 +462,8 @@ h2 {
 .todo-form,
 .qr-form {
     display: flex;
-    gap: 10px;
-    margin-bottom: 14px;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
 }
 
 input {
@@ -449,12 +471,12 @@ input {
     min-width: 0;
     height: 42px;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 11px;
+    border-radius: var(--radius-sm);
     background: rgba(255, 255, 255, 0.035);
     color: var(--text);
     padding: 0 12px;
     outline: none;
-    transition: border-color 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+    transition: border-color 220ms var(--ease-premium), box-shadow 220ms var(--ease-premium), background-color 220ms var(--ease-premium);
 }
 
 input::placeholder {
@@ -476,14 +498,15 @@ input:focus {
 button,
 .button-link {
     border: 0;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     background: linear-gradient(145deg, #86d0ff, #7782ff);
     color: #03101e;
     font-weight: 700;
-    min-width: 96px;
-    height: 40px;
+    min-width: 108px;
+    height: 42px;
+    padding: 0 var(--space-3);
     cursor: pointer;
-    transition: transform 220ms ease, filter 220ms ease, box-shadow 220ms ease;
+    transition: transform 220ms var(--ease-premium), filter 220ms var(--ease-premium), box-shadow 220ms var(--ease-premium);
     position: relative;
     overflow: hidden;
     background-size: 160% 160%;
@@ -521,14 +544,14 @@ button:hover::before,
     justify-content: center;
     text-decoration: none;
     width: fit-content;
-    padding: 0 16px;
+    padding: 0 var(--space-3);
 }
 
 button:hover,
 .button-link:hover {
-    filter: brightness(1.05);
-    transform: translateY(-1px) scale(1.05);
-    box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.3), 0 12px 24px rgba(111, 132, 255, 0.28);
+    filter: brightness(1.04);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 0 0 1px rgba(126, 200, 255, 0.24), 0 10px 20px rgba(111, 132, 255, 0.24);
 }
 
 button:active,
@@ -552,7 +575,7 @@ button:disabled {
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 8px;
+    gap: var(--space-1);
 }
 
 .todo-item {
@@ -560,12 +583,12 @@ button:disabled {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: var(--space-2);
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--line-soft);
-    border-radius: 10px;
-    padding: 10px 12px;
-    transition: border-color 200ms ease, transform 200ms ease, background-color 200ms ease;
+    border-radius: var(--radius-sm);
+    padding: var(--space-2);
+    transition: border-color 200ms var(--ease-premium), transform 200ms var(--ease-premium), background-color 200ms var(--ease-premium);
 }
 
 .todo-item::before {
@@ -615,13 +638,13 @@ button:disabled {
 
 .todo-actions {
     display: flex;
-    gap: 8px;
+    gap: var(--space-1);
 }
 
 .ghost-btn {
     min-width: 76px;
     height: 32px;
-    border-radius: 8px;
+    border-radius: var(--space-1);
     background: rgba(255, 255, 255, 0.08);
     color: var(--text);
     font-size: 0.8rem;
@@ -646,13 +669,13 @@ button:disabled {
     display: grid;
     place-items: center;
     border: 1px dashed rgba(255, 255, 255, 0.18);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     background: rgba(255, 255, 255, 0.02);
     background-image:
         linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
         linear-gradient(135deg, rgba(128, 187, 255, 0.09) 0%, transparent 42%, rgba(146, 128, 255, 0.08) 100%);
-    padding: 14px;
-    transition: box-shadow 260ms ease, border-color 260ms ease;
+    padding: var(--space-3);
+    transition: box-shadow 260ms var(--ease-premium), border-color 260ms var(--ease-premium);
 }
 
 .qr-output.qr-output-active {
