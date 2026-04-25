@@ -166,6 +166,12 @@ body::after {
     position: sticky;
     top: 12px;
     z-index: 4;
+    transition: box-shadow 220ms var(--ease-premium), border-color 220ms var(--ease-premium), background-color 220ms var(--ease-premium);
+}
+
+.dashboard-header:hover {
+    border-color: rgba(166, 199, 241, 0.22);
+    box-shadow: 0 14px 28px rgba(4, 8, 16, 0.32);
 }
 
 .dashboard-header::after {
@@ -376,6 +382,10 @@ h2 {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+.news-item:active {
+    transform: translateY(-1px);
+}
+
 .news-item:hover::after {
     opacity: 1;
 }
@@ -479,6 +489,11 @@ input {
     padding: 0 12px;
     outline: none;
     transition: border-color 220ms var(--ease-premium), box-shadow 220ms var(--ease-premium), background-color 220ms var(--ease-premium);
+}
+
+input:hover {
+    border-color: rgba(145, 171, 210, 0.34);
+    background: rgba(255, 255, 255, 0.032);
 }
 
 input::placeholder {
@@ -606,6 +621,10 @@ button:disabled {
     background-color: rgba(79, 168, 255, 0.06);
 }
 
+.todo-item:active {
+    transform: translateY(0);
+}
+
 .todo-item-enter {
     animation: todoEnter 320ms ease both;
 }
@@ -677,6 +696,11 @@ button:disabled {
         linear-gradient(135deg, rgba(128, 187, 255, 0.09) 0%, transparent 42%, rgba(146, 128, 255, 0.08) 100%);
     padding: var(--space-3);
     transition: box-shadow 260ms var(--ease-premium), border-color 260ms var(--ease-premium);
+}
+
+.qr-output:hover {
+    border-color: rgba(166, 198, 238, 0.28);
+    box-shadow: 0 10px 22px rgba(6, 12, 22, 0.22);
 }
 
 .qr-output.qr-output-active {
